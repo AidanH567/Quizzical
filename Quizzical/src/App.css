@@ -35,19 +35,19 @@
 }
 
 .question-single{
-  height: 200px;
+  height: 180px;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 90px 50px;
   border-bottom: 2px solid #DBDEF0;
 }
 
 .question-single > h2 {
   grid-column: 1/-1;
   grid-row: 1/2;
-  height: 50px;
-  margin-bottom: 50px;
+  height: auto;
+  margin-bottom: 0;
 }
 
 .question-single > button {
