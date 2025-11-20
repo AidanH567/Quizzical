@@ -31,12 +31,13 @@
 }
 
 .quizz-screen{
-  width: 412px;
+  width: 500px;
+  height: 100vh;
 }
 
 .question-single{
-  height: 180px;
-  width: 100%;
+  width: auto;
+  height: auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: 90px 50px;
@@ -47,12 +48,13 @@
   grid-column: 1/-1;
   grid-row: 1/2;
   height: auto;
+  width: auto;
   margin-bottom: 0;
 }
 
 .question-single > button {
-  width: 90px;
-  height: 40px;
+  height: auto;
+  width: auto;
   color: #4D5B9E;
   background-color: #F5F7FB;
   border-radius: 15px;

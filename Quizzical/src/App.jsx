@@ -4,36 +4,44 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { triviaQuestions } from "./DummyQuestions"
 import { fetchTriviaQuestions } from "./TrviaFetch"
+import { v4 as uuidv4 } from "uuid"
+import { decode } from "html-entities";
 
 function App() {
 
   const [startScreen, setStartScreen] = useState(false)
   const [questions, setQuestions] = useState([])
 
-  useEffect(() => {
-    async function loadQuestions() {
-      const results = await fetchTriviaQuestions(5)
-      console.log("RESULTS IN APP:", results);
-      setQuestions(results)
-    }
 
-    loadQuestions()
+  async function loadQuestions() {
+    const results = await fetchTriviaQuestions(5)
 
-  }, [])
+    const cleanedResults = results.map(q => ({
+      ...q,
+      question: decode(q.question),
+      correct_answer: decode(q.correct_answer),
+      incorrect_answers: q.incorrect_answers.map(ans => decode(ans))
+    }))
 
-   console.log("results in questions", questions)
+    console.log("RESULTS IN APP:", results);
+    setQuestions(cleanedResults)
+  }
+
+
+  console.log("results in questions", questions)
 
   function toggleStartScreen() {
     setStartScreen(true)
+    loadQuestions()
   }
 
-  const quizzElements = triviaQuestions.map((question) => {
+  const quizzElements = questions.map((question) => {
     return (<article className='question-single'>
       <h2>{question.question}</h2>
-      <button>{question.options[0]}</button>
-      <button>{question.options[1]}</button>
-      <button>{question.options[2]}</button>
-      <button>{question.options[3]}</button>
+      <button key={uuidv4()}>{question.correct_answer}</button>
+      <button key={uuidv4()}>{question.incorrect_answers[0]}</button>
+      <button key={uuidv4()}>{question.incorrect_answers[1]}</button>
+      <button key={uuidv4()}>{question.incorrect_answers[2]}</button>
     </article>
     )
   })
