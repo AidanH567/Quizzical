@@ -36,12 +36,14 @@ function App() {
   }
 
   const quizzElements = questions.map((question) => {
+    const combined = [question.correct_answer, ...question.incorrect_answers].sort(() => Math.random() - 0.5)
+    console.log("COMBINED ANSWERS:", combined)
     return (<article className='question-single'>
       <h2>{question.question}</h2>
-      <button key={uuidv4()}>{question.correct_answer}</button>
-      <button key={uuidv4()}>{question.incorrect_answers[0]}</button>
-      <button key={uuidv4()}>{question.incorrect_answers[1]}</button>
-      <button key={uuidv4()}>{question.incorrect_answers[2]}</button>
+      <button key={uuidv4()}>{combined[0]}</button>
+      <button key={uuidv4()}>{combined[1]}</button>
+      <button key={uuidv4()}>{combined[2]}</button>
+      <button key={uuidv4()}>{combined[3]}</button>
     </article>
     )
   })
