@@ -8,9 +8,10 @@ function App() {
   const [startScreen, setStartScreen] = useState(false)
   const [questions, setQuestions] = useState([])
   const [chosenAnswers, setChosenAnswers] = useState({}) // { [questionId]: answer }
+  const [score, setScore] = useState(0)
 
   console.log(questions.length)
-  console.log(Object.keys(chosenAnswers).length)
+  console.log((chosenAnswers))
 
   async function loadQuestions() {
     const results = await fetchTriviaQuestions(5)
@@ -39,6 +40,7 @@ function App() {
     setStartScreen(true)
     loadQuestions()
     setChosenAnswers({})
+    setScore(0)
   }
 
   function handleAnswerClick(questionId, answer) {
@@ -46,6 +48,10 @@ function App() {
       ...prev,
       [questionId]: answer
     }))
+    if (answer === questions.find(q => q.id === questionId).correct_answer) {
+      setScore(prevScore => prevScore + 1)
+    }
+    
   }
 
   const quizzElements = questions.map((question) => {
@@ -104,6 +110,7 @@ function App() {
           {quizzElements}
         </section>
       )}
+      <span>Score: {score}</span>
       {Object.keys(chosenAnswers).length === questions.length && (
   <button onClick={toggleStartScreen}>Restart Game</button>
 )}
