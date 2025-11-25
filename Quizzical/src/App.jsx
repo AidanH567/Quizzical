@@ -6,11 +6,13 @@ import { triviaQuestions } from "./DummyQuestions"
 import { fetchTriviaQuestions } from "./TrviaFetch"
 import { v4 as uuidv4 } from "uuid"
 import { decode } from "html-entities";
+import clsx from "clsx"
 
 function App() {
 
   const [startScreen, setStartScreen] = useState(false)
   const [questions, setQuestions] = useState([])
+  const [chosenAnswers, setChosenAnswers] = useState(null)
 
 
   async function loadQuestions() {
@@ -34,17 +36,41 @@ function App() {
     setStartScreen(true)
     loadQuestions()
   }
- 
+
   const quizzElements = questions.map((question) => {
     const combined = [question.correct_answer, ...question.incorrect_answers].sort(() => Math.random() - 0.5)
+
+
     console.log("COMBINED ANSWERS:", combined)
-    return (<article className='question-single'>
-      <h2>{question.question}</h2>
-      <button key={uuidv4()}>{combined[0]}</button>
-      <button key={uuidv4()}>{combined[1]}</button>
-      <button key={uuidv4()}>{combined[2]}</button>
-      <button key={uuidv4()}>{combined[3]}</button>
-    </article>
+
+    function handleAnswerClick(answer) {
+      const isCorrect = answer === question.correct_answer
+      if (isCorrect) {
+        console.log("correct")
+        
+      } else {
+        console.log("wrong")
+      }
+    }
+
+    // const btnClass = clsx(
+    //   "answer-btn",
+    //   chosenAnswers && {
+    //     correct: isCorrect,
+    //     wrong: isChosen && !isCorrect
+    //   }
+    // ) 
+
+    return (
+      <article className='question-single'>
+        <h2>{question.question}</h2>
+
+        {combined.map((answer) => (
+          <button key={uuidv4()} onClick={() => handleAnswerClick(answer)}>
+            {answer}
+          </button>
+        ))}
+      </article>
     )
   })
 
@@ -55,15 +81,7 @@ function App() {
         <p>The ultimate trivia game!</p>
         <button onClick={toggleStartScreen}>Start quiz</button>
       </section>}
-
       {startScreen && <section className='quizz-screen'>
-        {/* <article className='question-single'>
-          <h2>How would one say goodbye in Spanish?</h2>
-            <button>Adiós</button>
-            <button>Hola</button>
-            <button>Au Revoir</button>
-            <button>Salir</button>
-        </article> */}
         {quizzElements}
       </section>}
 
