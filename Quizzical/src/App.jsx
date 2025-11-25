@@ -40,7 +40,6 @@ function App() {
   const quizzElements = questions.map((question) => {
     const combined = [question.correct_answer, ...question.incorrect_answers].sort(() => Math.random() - 0.5)
 
-
     console.log("COMBINED ANSWERS:", combined)
 
     function handleAnswerClick(answer) {
