@@ -53,24 +53,29 @@ function App() {
       }
     }
 
-    // const btnClass = clsx(
-    //   "answer-btn",
-    //   chosenAnswers && {
-    //     correct: isCorrect,
-    //     wrong: isChosen && !isCorrect
-    //   }
-    // ) 
-
     return (
-      <article className='question-single'>
-        <h2>{question.question}</h2>
+        <article className='question-single' key={question.question}>
+      <h2>{question.question}</h2>
 
-        {combined.map((answer) => (
-          <button key={uuidv4()} onClick={() => handleAnswerClick(answer)}>
+      {combined.map((answer) => {
+        const isCorrect = answer === question.correct_answer
+        const isChosen = answer === chosenAnswers
+
+        const btnStyle = {
+          backgroundColor: isCorrect ? "green" : "red"
+        }
+
+        return (
+          <button
+            key={uuidv4()}
+            onClick={() => handleAnswerClick(answer)}
+            style={btnStyle}
+          >
             {answer}
           </button>
-        ))}
-      </article>
+        )
+      })}
+    </article>
     )
   })
 
