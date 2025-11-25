@@ -9,6 +9,9 @@ function App() {
   const [questions, setQuestions] = useState([])
   const [chosenAnswers, setChosenAnswers] = useState({}) // { [questionId]: answer }
 
+  console.log(questions.length)
+  console.log(Object.keys(chosenAnswers).length)
+
   async function loadQuestions() {
     const results = await fetchTriviaQuestions(5)
 
@@ -24,6 +27,7 @@ function App() {
         id: uuidv4(),              // give each question a stable id
         question: decode(q.question),
         correct_answer: decodedCorrect,
+        incorrect_answers: decodedIncorrect,
         answers: shuffledAnswers
       }
     })
@@ -34,6 +38,7 @@ function App() {
   function toggleStartScreen() {
     setStartScreen(true)
     loadQuestions()
+    setChosenAnswers({})
   }
 
   function handleAnswerClick(questionId, answer) {
@@ -99,6 +104,9 @@ function App() {
           {quizzElements}
         </section>
       )}
+      {Object.keys(chosenAnswers).length === questions.length && (
+  <button onClick={toggleStartScreen}>Restart Game</button>
+)}
     </main>
   )
 }
