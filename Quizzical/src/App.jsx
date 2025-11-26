@@ -9,9 +9,7 @@ function App() {
   const [questions, setQuestions] = useState([])
   const [chosenAnswers, setChosenAnswers] = useState({}) // { [questionId]: answer }
   const [score, setScore] = useState(0)
-
-  console.log(questions.length)
-  console.log((chosenAnswers))
+  const [isChecked, setIsChecked] = useState(false)
 
   async function loadQuestions() {
     const results = await fetchTriviaQuestions(5)
@@ -20,12 +18,11 @@ function App() {
       const decodedCorrect = decode(q.correct_answer)
       const decodedIncorrect = q.incorrect_answers.map(ans => decode(ans))
 
-      // shuffle ONCE here and store as `answers`
       const shuffledAnswers = [decodedCorrect, ...decodedIncorrect]
         .sort(() => Math.random() - 0.5)
 
       return {
-        id: uuidv4(),              // give each question a stable id
+        id: uuidv4(),
         question: decode(q.question),
         correct_answer: decodedCorrect,
         incorrect_answers: decodedIncorrect,
@@ -41,17 +38,31 @@ function App() {
     loadQuestions()
     setChosenAnswers({})
     setScore(0)
+    setIsChecked(false)
   }
 
   function handleAnswerClick(questionId, answer) {
+    // only choose before checking
+    if (isChecked) return
+
     setChosenAnswers(prev => ({
       ...prev,
       [questionId]: answer
     }))
-    if (answer === questions.find(q => q.id === questionId).correct_answer) {
-      setScore(prevScore => prevScore + 1)
-    }
-    
+  }
+
+  function checkAnswers() {
+    let newScore = 0
+
+    questions.forEach(q => {
+      const chosen = chosenAnswers[q.id]
+      if (chosen === q.correct_answer) {
+        newScore++
+      }
+    })
+
+    setScore(newScore)
+    setIsChecked(true)
   }
 
   const quizzElements = questions.map((question) => {
@@ -63,37 +74,40 @@ function App() {
 
         {question.answers.map((answer) => {
           const isCorrect = answer === question.correct_answer
-          const isWrong = !isCorrect
           const isChosen = answer === chosen
 
           let bg = {}
 
-          if (chosen) {
-  if (isCorrect) {
-    
-    bg = {
-      backgroundColor: "green",
-      opacity: 0.5
-    }
-  } else if (isChosen && !isCorrect) {
-    
-    bg = {
-      backgroundColor: "red",
-      opacity: 0.5
-    }
-  } else {
-    bg = {
-      opacity: 0.5
-    }
-  }
-}
+          if (!isChecked) {
+            // BEFORE "Check answers": just grey out chosen answer
+            if (isChosen) {
+              bg = { opacity: 0.5 }
+            }
+          } else {
+            // AFTER "Check answers": red/green logic
+            if (isCorrect) {
+              bg = {
+                backgroundColor: "green",
+                opacity: 0.5
+              }
+            } else if (isChosen && !isCorrect) {
+              bg = {
+                backgroundColor: "red",
+                opacity: 0.5
+              }
+            } else {
+              bg = {
+                opacity: 0.5
+              }
+            }
+          }
 
           return (
             <button
-              key={answer} // answers are unique strings here, so ok
+              key={answer}
               onClick={() => handleAnswerClick(question.id, answer)}
               style={bg}
-              disabled={chosen}
+              disabled={!!chosen || isChecked} // lock in once chosen or checked
             >
               {answer}
             </button>
@@ -103,10 +117,7 @@ function App() {
     )
   })
 
-  function checkAnswers() {
-
-    
-  }
+  const allAnswered = Object.keys(chosenAnswers).length === questions.length
 
   return (
     <main>
@@ -123,10 +134,22 @@ function App() {
           {quizzElements}
         </section>
       )}
-      <span>Score: {score}</span>
-      {Object.keys(chosenAnswers).length === questions.length && (
-  <button onClick={toggleStartScreen}>Restart Game</button>
-)}
+
+      {startScreen && (
+        <>
+          <span>Score: {score}</span>
+
+          {/* Show "Check answers" when all answered and not yet checked */}
+          {allAnswered && !isChecked && (
+            <button onClick={checkAnswers}>Check answers</button>
+          )}
+
+          {/* After checking, allow restart */}
+          {isChecked && (
+            <button onClick={toggleStartScreen}>Restart Game</button>
+          )}
+        </>
+      )}
     </main>
   )
 }
