@@ -68,17 +68,25 @@ function App() {
 
           let bg = {}
 
-          if (isChosen && isCorrect) {
-            bg = {
-              backgroundColor: "green",
-              opacity: 0.5
-            }
-          } else if (isChosen && isWrong) {
-            bg = {
-              backgroundColor: "red",
-              opacity: 0.5
-            }
-          }
+          if (chosen) {
+  if (isCorrect) {
+    
+    bg = {
+      backgroundColor: "green",
+      opacity: 0.5
+    }
+  } else if (isChosen && !isCorrect) {
+    
+    bg = {
+      backgroundColor: "red",
+      opacity: 0.5
+    }
+  } else {
+    bg = {
+      opacity: 0.5
+    }
+  }
+}
 
           return (
             <button
@@ -94,6 +102,11 @@ function App() {
       </article>
     )
   })
+
+  function checkAnswers() {
+
+    
+  }
 
   return (
     <main>
