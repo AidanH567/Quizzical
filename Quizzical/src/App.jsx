@@ -3,6 +3,10 @@ import './App.css'
 import { fetchTriviaQuestions } from "./TrviaFetch"
 import { v4 as uuidv4 } from "uuid"
 import { decode } from "html-entities";
+import QuizzElements from './Components/QuizzElements';
+import StartScreen from './Components/StartScreen';
+import QuizzScreen from './Components/QuizzScreen';
+
 
 function App() {
   const [startScreen, setStartScreen] = useState(false)
@@ -60,91 +64,41 @@ function App() {
         newScore++
       }
     })
-
     setScore(newScore)
     setIsChecked(true)
   }
 
-  const quizzElements = questions.map((question) => {
-    const chosen = chosenAnswers[question.id]
-
-    return (
-      <article className='question-single' key={question.id}>
-        <h2>{question.question}</h2>
-
-        {question.answers.map((answer) => {
-          const isCorrect = answer === question.correct_answer
-          const isChosen = answer === chosen
-
-          let bg = {}
-
-          if (!isChecked) {
-            // BEFORE "Check answers": just grey out chosen answer
-            if (isChosen) {
-              bg = { opacity: 0.5 }
-            }
-          } else {
-            // AFTER "Check answers": red/green logic
-            if (isCorrect) {
-              bg = {
-                backgroundColor: "green",
-                opacity: 0.5
-              }
-            } else if (isChosen && !isCorrect) {
-              bg = {
-                backgroundColor: "red",
-                opacity: 0.5
-              }
-            } else {
-              bg = {
-                opacity: 0.5
-              }
-            }
-          }
-
-          return (
-            <button
-              key={answer}
-              onClick={() => handleAnswerClick(question.id, answer)}
-              style={bg}
-              disabled={!!chosen || isChecked} // lock in once chosen or checked
-            >
-              {answer}
-            </button>
-          )
-        })}
-      </article>
-    )
-  })
+  
 
   const allAnswered = Object.keys(chosenAnswers).length === questions.length
 
   return (
     <main>
       {!startScreen && (
-        <section className='start-screen'>
-          <h1>Quizzical</h1>
-          <p>The ultimate trivia game!</p>
-          <button onClick={toggleStartScreen}>Start quiz</button>
-        </section>
+        <StartScreen onClick={toggleStartScreen}/>
       )}
 
       {startScreen && (
-        <section className='quizz-screen'>
-          {quizzElements}
-        </section>
+        <QuizzScreen>
+          <QuizzElements 
+            questions={questions}
+            chosenAnswers={chosenAnswers}
+            isChecked={isChecked}
+            handleAnswerClick={handleAnswerClick}>
+          </QuizzElements>
+        </QuizzScreen>
       )}
 
       {startScreen && (
         <>
           <span>Score: {score}</span>
 
-          {/* Show "Check answers" when all answered and not yet checked */}
+         
           {allAnswered && !isChecked && (
             <button onClick={checkAnswers}>Check answers</button>
           )}
 
-          {/* After checking, allow restart */}
+          
           {isChecked && (
             <button onClick={toggleStartScreen}>Restart Game</button>
           )}
