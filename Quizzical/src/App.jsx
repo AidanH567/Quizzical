@@ -6,6 +6,7 @@ import { decode } from "html-entities";
 import QuizzElements from './Components/QuizzElements';
 import StartScreen from './Components/StartScreen';
 import QuizzScreen from './Components/QuizzScreen';
+import QuizFooter from './Components/QuizzFooter';
 
 
 function App() {
@@ -46,7 +47,7 @@ function App() {
   }
 
   function handleAnswerClick(questionId, answer) {
-    // only choose before checking
+    
     if (isChecked) return
 
     setChosenAnswers(prev => ({
@@ -89,21 +90,15 @@ function App() {
         </QuizzScreen>
       )}
 
-      {startScreen && (
-        <>
-          <span>Score: {score}</span>
-
-         
-          {allAnswered && !isChecked && (
-            <button onClick={checkAnswers}>Check answers</button>
-          )}
-
-          
-          {isChecked && (
-            <button onClick={toggleStartScreen}>Restart Game</button>
-          )}
-        </>
-      )}
+     {startScreen && (
+        <QuizFooter
+           score={score}
+           isChecked={isChecked}
+           allAnswered={allAnswered}
+           onCheck={checkAnswers}
+           onRestart={toggleStartScreen}
+  />
+)}
     </main>
   )
 }
