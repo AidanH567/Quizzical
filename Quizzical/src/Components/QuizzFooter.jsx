@@ -7,14 +7,14 @@ export default function QuizFooter({
 }) {
   return (
     <div className="quiz-footer">
-      <span>Score: {score}</span>
+     {isChecked && <span>You scored {score}/5 correct answers</span>}
 
       {!isChecked && allAnswered && (
         <button onClick={onCheck}>Check answers</button>
       )}
 
       {isChecked && (
-        <button onClick={onRestart}>Restart Game</button>
+        <button onClick={onRestart}>Play Again</button>
       )}
     </div>
   );
