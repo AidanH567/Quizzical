@@ -7,6 +7,7 @@ import QuizzElements from './Components/QuizzElements';
 import StartScreen from './Components/StartScreen';
 import QuizzScreen from './Components/QuizzScreen';
 import QuizFooter from './Components/QuizzFooter';
+import CategorySelect from './Components/Categories';
 
 
 function App() {
@@ -78,7 +79,7 @@ function App() {
       {!startScreen && (
         <StartScreen onClick={toggleStartScreen}/>
       )}
-
+     <CategorySelect></CategorySelect>
       {startScreen && (
         <QuizzScreen>
           <QuizzElements 
