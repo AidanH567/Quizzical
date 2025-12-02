@@ -1,6 +1,6 @@
-export async function fetchTriviaQuestions(amount = 5) {
+export async function fetchTriviaQuestions(amount = 5, category = "multiple") {
     const res = await fetch(
-        `https://opentdb.com/api.php?amount=${amount}&type=multiple`
+        `https://opentdb.com/api.php?amount=${amount}&type=${category}`
     )
 
     const data = await res.json()
