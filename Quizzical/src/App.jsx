@@ -16,6 +16,17 @@ function App() {
   const [chosenAnswers, setChosenAnswers] = useState({}) // { [questionId]: answer }
   const [score, setScore] = useState(0)
   const [isChecked, setIsChecked] = useState(false)
+  const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        async function loadCategories() {
+            const res = await fetch("https://opentdb.com/api_category.php");
+            const data = await res.json();
+            setCategories(data.trivia_categories);
+        }
+
+        loadCategories();
+    }, []);
 
   async function loadQuestions() {
     const results = await fetchTriviaQuestions(5)
